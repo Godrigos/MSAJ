@@ -21,13 +21,13 @@ Copyright 2018 Rodrigo Aluizio
 
 from collections import defaultdict
 
+
 def seq_check(msa):
     """
     Function to compare alignment files and check if all the strains
     names match between files.
     """
     id_list = defaultdict(list)
-    i = 0
 
     for i in range(len(msa)):
         for j in range(len(msa[i])):
@@ -39,4 +39,3 @@ def seq_check(msa):
                 set(id_list[0]).intersection(*id_list[1:]))
 
     return diff_ids
-

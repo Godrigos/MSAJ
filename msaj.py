@@ -20,27 +20,41 @@ Copyright 2018 Rodrigo Aluizio
 """
 
 from Bio import AlignIO
+from Bio.Alphabet.IUPAC import IUPACAmbiguousDNA
 from glob import glob
 from sys import exit
-from os.path import splitext, basename
+from os.path import splitext, basename, join
 from seq_check import seq_check
 
-# Define fastA file type extensions
-types = ('*.fas', '*.fa', '*.faa', '*.fasta')
+# Define alignment files type extensions
+fasta = ['*.fas', '*.fa', '*.faa', '*.fasta']
+clustal = ['*.aln']
+nexus = ['*.nex', '*.nexus', '*.nxs']
+stockholm = ['*.sth', '*.stk', '*.sto']
+phylip = ['*.phy']
+types = fasta + clustal + nexus + stockholm + phylip
 
-# Create fastA files list and populate it
+# Create alignment files list and populate it
 files = []
 
 for file in types:
-    files.extend(glob(file))
+    files.extend(glob(join("./Example", file)))
 
 files = sorted(files, key=str.lower)
 
-# Read fastA files and store data in a list
+# Read alignment files and store data in a list
 msa = []
-i = 0
-for i in range(len(files)):
-    msa.append(AlignIO.read(files[i], "fasta"))
+for file in files:
+    if splitext(basename(file))[1] in [s.strip('*') for s in fasta]:
+        msa.append(AlignIO.read(file, "fasta", alphabet=IUPACAmbiguousDNA()))
+    if splitext(basename(file))[1] in [s.strip('*') for s in clustal]:
+        msa.append(AlignIO.read(file, "clustal", alphabet=IUPACAmbiguousDNA()))
+    if splitext(basename(file))[1] in [s.strip('*') for s in nexus]:
+        msa.append(AlignIO.read(file, "nexus", alphabet=IUPACAmbiguousDNA()))
+    if splitext(basename(file))[1] in [s.strip('*') for s in stockholm]:
+        msa.append(AlignIO.read(file, "stockholm", alphabet=IUPACAmbiguousDNA()))
+    if splitext(basename(file))[1] in [s.strip('*') for s in phylip]:
+        msa.append(AlignIO.read(file, "phylip", alphabet=IUPACAmbiguousDNA()))
 
 # Create combined sequences
 try:
@@ -65,11 +79,12 @@ try:
         msa[i].sort()
         combined = combined + msa[i]
 
-    # Save multiocus multiple sequence alignment
-    with open("MLMSA.fas", "w") as f:
-        AlignIO.write(combined, f, "fasta")
+    # Save multi locus multiple sequence alignment
+    with open(join("./Example", "MLMSA.nex"), "w") as f:
+        AlignIO.write(combined, f, "nexus")
+
     # Print some simple but useful information
-    print("Multilocus Multiple Sequence Alignment created (MLMSA.fas)!")
+    print("Multi Locus Multiple Sequence Alignment created (MLMSA.fas)!")
     print("\n----- Useful Information -----")
     print("Number of Loci: " + str(len(msa)))
     print("Number of Sequences: " + str(len(msa[0])))
@@ -81,8 +96,8 @@ try:
         count = count + msa[i].get_alignment_length()
     print("------------------------------")
         
-    with open('MLMSA.txt', 'w') as f:
-        print("Multilocus Multiple Sequence Alignment created (MLMSA.fas)!",
+    with open(join("./Example", 'MLMSA.txt'), 'w') as f:
+        print("Multi Locus Multiple Sequence Alignment created (MLMSA.fas)!",
               file=f)
         print("\n----- Useful Information -----", file=f)
         print("Number of Loci: " + str(len(msa)), file=f)
@@ -105,4 +120,3 @@ except IndexError:
     print("Press Enter to exit ...")
     input()
     exit(1)
-
