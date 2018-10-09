@@ -27,15 +27,19 @@ def seq_check(msa):
     Function to compare alignment files and check if all the strains
     names match between files.
     """
-    id_list = defaultdict(list)
+    try:
+        id_list = defaultdict(list)
 
-    for i in range(len(msa)):
-        for j in range(len(msa[i])):
-            id_list[i].append(msa[i][j].id)
+        for i in range(len(msa)):
+            for j in range(len(msa[i])):
+                id_list[i].append(msa[i][j].id)
 
-    id_list = list(id_list.values())
+        id_list = list(id_list.values())
     
-    diff_ids = (set(id_list[0]).union(*id_list[1:]) -
-                set(id_list[0]).intersection(*id_list[1:]))
+        diff_ids = (set(id_list[0]).union(*id_list[1:]) -
+                    set(id_list[0]).intersection(*id_list[1:]))
 
-    return diff_ids
+        return diff_ids
+    except IndexError:
+        diff_ids = 0
+        return diff_ids
