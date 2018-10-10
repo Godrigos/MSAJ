@@ -131,7 +131,8 @@ class App(QMainWindow):
                 self.report()
             except (ValueError, NexusError):
                 self.textbox.setTextColor(QColor("red"))
-                self.textbox.append(f"{basename(file)} is corrupted!")
+                self.textbox.append(f"{basename(file)} can not be imported, it may be corrupted or with incorrect"
+                                    f" data!")
                 self.textbox.setTextColor(QColor("black"))
                 self.status = False
         else:
