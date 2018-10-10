@@ -28,6 +28,7 @@ from Bio import AlignIO
 from Bio.Nexus.Nexus import NexusError
 from Bio.Alphabet.IUPAC import IUPACAmbiguousDNA
 from seq_check import seq_check
+from pathlib import Path
 
 if getattr(sys, "frozen", False):
     datadir = dirname(sys.executable)
@@ -88,9 +89,10 @@ class App(QMainWindow):
     def file_names(self):
         options = QFileDialog.ReadOnly
         self.files = []
-        self.files = QFileDialog.getOpenFileNames(self, 'Select files', '', 'FASTA Files (*.fas *.fa *.fasta);;'
-                                                                            'NEXUS Files (*.nex *.nexus *.nxs);;'
-                                                                            'All Files (*)',
+        self.files = QFileDialog.getOpenFileNames(self, 'Select files', str(Path.home()),
+                                                  'FASTA Files (*.fas *.fa *.fasta);;'
+                                                  'NEXUS Files (*.nex *.nexus *.nxs);;'
+                                                  'All Files (*)',
                                                   options=options)[0]
         self.msa = []
         if self.files:
@@ -115,7 +117,7 @@ class App(QMainWindow):
 
     def folder_name(self):
         options = QFileDialog.ReadOnly
-        folder = QFileDialog.getExistingDirectory(self, "Select a directory", options=options)
+        folder = QFileDialog.getExistingDirectory(self, "Select a directory", str(Path.home()), options=options)
         self.msa = []
         self.files = []
         types = ['*.fas', '*.fa', '*.fasta', '*.nex', '*.nexus', '*.nxs']
@@ -165,9 +167,9 @@ class App(QMainWindow):
 
     def save_file(self):
         options = QFileDialog.Options()
-        self.filename = QFileDialog.getSaveFileName(self, "Save File", "", "NEXUS Files (*.nex *.nexus *.nxs)",
-                                                    options=options)[0]
-        if basename(splitext(self.filename)[1]) == '':
+        self.filename = QFileDialog.getSaveFileName(self, "Save File", str(Path.home()),
+                                                    "NEXUS Files (*.nex *.nexus *.nxs)", options=options)[0]
+        if basename(splitext(self.filename)[1]) == '' and basename(splitext(self.filename)[0]) != '':
             self.filename += '.nex'
         return self.filename
 
@@ -204,5 +206,7 @@ class App(QMainWindow):
             self.msa = []
             self.files = []
             self.join.setEnabled(False)
-        except FileNotFoundError:
-            pass
+        except (TypeError, IndexError, FileNotFoundError):
+            self.msa = []
+            self.files = []
+            self.join.setEnabled(False)
