@@ -46,6 +46,7 @@ class App(QMainWindow):
 
         self.files = []
         self.msa = []
+        self.filename = ''
         self.status = None
 
         self.open_files = QAction(QIcon(join(datadir, "icons/file.svg")), 'Open Files', self)
@@ -85,11 +86,12 @@ class App(QMainWindow):
 
     def file_names(self):
         options = QFileDialog.ReadOnly
+        self.files = []
         self.files = QFileDialog.getOpenFileNames(self, 'Select files', '', 'FASTA Files (*.fas *.fa *.fasta);;'
                                                                             'NEXUS Files (*.nex *.nexus *.nxs);;'
                                                                             'All Files (*)',
                                                   options=options)[0]
-        self.msa= []
+        self.msa = []
         if self.files:
             self.files = sorted(self.files, key=str.lower)
             try:
@@ -114,6 +116,7 @@ class App(QMainWindow):
         options = QFileDialog.ReadOnly
         folder = QFileDialog.getExistingDirectory(self, "Select a directory", options=options)
         self.msa = []
+        self.files = []
         types = ['*.fas', '*.fa', '*.fasta', '*.nex', '*.nexus', '*.nxs']
         for file in types:
             self.files.extend(glob(join(folder, file)))
@@ -134,7 +137,7 @@ class App(QMainWindow):
         else:
             self.textbox.setTextColor(QColor("red"))
             self.textbox.append("No files were imported!")
-            self.textbox.setTextColor(QColor("red"))
+            self.textbox.setTextColor(QColor("black"))
             self.status = False
 
     def report(self):
@@ -147,14 +150,22 @@ class App(QMainWindow):
         else:
             self.textbox.setTextColor(QColor("red"))
             self.textbox.append("Strains: ")
-            for value in diff_ids:
-                self.textbox.insertPlainText(str(value) + " ")
+            for value in list(diff_ids)[:-1]:
+                self.textbox.insertPlainText(str(value) + ", ")
                 self.textbox.moveCursor(QTextCursor.End)
+            self.textbox.insertPlainText(str(list(diff_ids)[-1]))
             self.textbox.append("do not have matches in all files!")
             self.textbox.append("Not merging them!")
             self.textbox.setTextColor(QColor("black"))
             self.msa = []
+            self.files = []
             self.status = False
+
+    def save_file(self):
+        options = QFileDialog.Options()
+        self.filename = QFileDialog.getSaveFileName(self, "Save File", "", "NEXUS Files (*.nex *.nexus *.nxs)",
+                                                    options=options)[0]
+        return self.filename
 
     def msaj(self):
         self.msa[0].sort()
@@ -164,15 +175,30 @@ class App(QMainWindow):
             combined = combined + self.msa[i]
 
         # Save multi locus multiple sequence alignment
-        with open(join("./Example", "MLMSA.nex"), "w") as f:
-            AlignIO.write(combined, f, "nexus")
+        try:
+            with open(self.save_file(), "w") as f:
+                AlignIO.write(combined, f, "nexus")
+                f.write('\nbegin sets;\n')
+                count = 1
+                for i in range(len(self.files)):
+                    f.write(f'    charset {splitext(basename(self.files[i]))[0]} = {str(count)}-'
+                            f'{str(self.msa[i].get_alignment_length() + count - 1)}\n')
+                    count = count + self.msa[i].get_alignment_length()
+                f.write('end;\n')
 
-        # Print some simple but useful information
-        self.textbox.append("\nMulti Locus Multiple Sequence Alignment created (MLMSA.nex)!")
-        self.textbox.append("----- Useful Information -----")
-        count = 1
-        for i in range(len(self.files)):
-            self.textbox.append("Locus " + splitext(basename(self.files[i]))[0] + ": " + str(count) +
-                                " - " + str(self.msa[i].get_alignment_length() + count - 1))
-            count = count + self.msa[i].get_alignment_length()
-        self.textbox.append("------------------------------")
+            # Print some simple but useful information
+            self.textbox.append("\nMulti Locus Multiple Sequence Alignment created!")
+            self.textbox.append(f"at {self.filename}")
+            self.textbox.append("\n----- Useful Information -----")
+            count = 1
+            for i in range(len(self.files)):
+                self.textbox.append("Locus " + splitext(basename(self.files[i]))[0] + ": " + str(count) +
+                                    " - " + str(self.msa[i].get_alignment_length() + count - 1))
+                count = count + self.msa[i].get_alignment_length()
+            self.textbox.append("------------------------------\n")
+
+            self.msa = []
+            self.files = []
+            self.join.setEnabled(False)
+        except FileNotFoundError:
+            pass
