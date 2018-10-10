@@ -41,7 +41,8 @@ class App(QMainWindow):
         super().__init__()
 
         self.setWindowTitle('Multi Sequence Alignment Joiner')
-        self.setGeometry(50, 50, 640, 400)
+        self.setGeometry(50, 75, 640, 400)
+        self.setFixedSize(640, 400)
         self.setWindowIcon(QIcon(join(datadir, 'icons/dna.svg')))
 
         self.files = []
