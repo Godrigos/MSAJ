@@ -8,7 +8,7 @@ Multiple Sequence Alignment Joiner
 MSAJ is a simple Multiple Sequence Alignment Joiner for 
 Multi Loci Sequence Analysis (MLSA).
 It is a [Python 3](https://www.python.org) application
-with a GUI built using PyQt5.
+with a GUI built using [PyQt5](https://www.riverbankcomputing.com/software/pyqt/intro).
 
 More information on the application usage, can be found
 [here](https://github.com/Godrigos/MSAJ/wiki).
