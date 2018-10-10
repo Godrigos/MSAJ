@@ -184,7 +184,7 @@ class App(QMainWindow):
                 f.write('\nbegin sets;\n')
                 count = 1
                 for i in range(len(self.files)):
-                    f.write(f'    charset {splitext(basename(self.files[i]))[0]} = {str(count)}-'
+                    f.write(f'\tcharset {splitext(basename(self.files[i]))[0]} = {str(count)}-'
                             f'{str(self.msa[i].get_alignment_length() + count - 1)}\n')
                     count = count + self.msa[i].get_alignment_length()
                 f.write('end;\n')
