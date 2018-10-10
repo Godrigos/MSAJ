@@ -108,7 +108,7 @@ class App(QMainWindow):
                 self.status = False
         else:
             self.textbox.setTextColor(QColor("red"))
-            self.textbox.append("No files were imported!")
+            self.textbox.append("No files were imported!\n")
             self.textbox.setTextColor(QColor("red"))
             self.status = False
 
@@ -189,7 +189,7 @@ class App(QMainWindow):
                 f.write('end;\n')
 
             # Print some simple but useful information
-            self.textbox.append("\nMulti Locus Multiple Sequence Alignment created!")
+            self.textbox.append("\nMulti Locus Multiple Sequence Alignment created")
             self.textbox.append(f"at {self.filename}")
             self.textbox.append("\n----- Useful Information -----")
             count = 1
@@ -197,7 +197,7 @@ class App(QMainWindow):
                 self.textbox.append("Locus " + splitext(basename(self.files[i]))[0] + ": " + str(count) +
                                     " - " + str(self.msa[i].get_alignment_length() + count - 1))
                 count = count + self.msa[i].get_alignment_length()
-            self.textbox.append("------------------------------\n")
+            self.textbox.append("-----------------------------------------\n")
 
             self.msa = []
             self.files = []
