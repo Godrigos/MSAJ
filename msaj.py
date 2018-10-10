@@ -112,7 +112,7 @@ class App(QMainWindow):
         else:
             self.textbox.setTextColor(QColor("red"))
             self.textbox.append("No files were imported!\n")
-            self.textbox.setTextColor(QColor("red"))
+            self.textbox.setTextColor(QColor("black"))
             self.status = False
 
     def folder_name(self):
