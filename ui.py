@@ -7,4 +7,4 @@ import sys
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     ex = App()
-    exit(app.exec_())
+    sys.exit(app.exec_())
