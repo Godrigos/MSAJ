@@ -146,23 +146,29 @@ class App(QMainWindow):
 
     def report(self):
         diff_ids = seq_check(self.msa)
-        if diff_ids == set():
-            self.textbox.append("Number of Loci: " + str(len(self.msa)))
-            self.textbox.append("Number of Sequences: " + str(len(self.msa[0])))
-            self.status = True
-            self.join.setEnabled(True)
-        else:
+        try:
+            if diff_ids == set():
+                self.textbox.append("Number of Loci: " + str(len(self.msa)))
+                self.textbox.append("Number of Sequences: " + str(len(self.msa[0])))
+                self.status = True
+                self.join.setEnabled(True)
+            else:
+                self.textbox.setTextColor(QColor("red"))
+                self.textbox.append("Strains: ")
+                for value in list(diff_ids)[:-1]:
+                    self.textbox.insertPlainText(str(value) + ", ")
+                    self.textbox.moveCursor(QTextCursor.End)
+                self.textbox.insertPlainText(str(list(diff_ids)[-1]))
+                self.textbox.append("do not have matches in all files!")
+                self.textbox.append("Not merging them!")
+                self.textbox.setTextColor(QColor("black"))
+                self.msa = []
+                self.files = []
+                self.status = False
+        except TypeError:
             self.textbox.setTextColor(QColor("red"))
-            self.textbox.append("Strains: ")
-            for value in list(diff_ids)[:-1]:
-                self.textbox.insertPlainText(str(value) + ", ")
-                self.textbox.moveCursor(QTextCursor.End)
-            self.textbox.insertPlainText(str(list(diff_ids)[-1]))
-            self.textbox.append("do not have matches in all files!")
-            self.textbox.append("Not merging them!")
+            self.textbox.setText("No files were imported!")
             self.textbox.setTextColor(QColor("black"))
-            self.msa = []
-            self.files = []
             self.status = False
 
     def save_file(self):
