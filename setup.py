@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name='MSAJ',
-    version='1.0.2',
+    version='1.0.3',
     url='https://github.com/Godrigos/MSAJ',
     license='GPL-3.0',
     author='Rodrigo Aluizio',

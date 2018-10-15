@@ -142,6 +142,9 @@ class App(QMainWindow):
             self.textbox.setTextColor(QColor("red"))
             self.textbox.append("No files were imported!")
             self.textbox.setTextColor(QColor("black"))
+            self.msa = []
+            self.files = []
+            self.join.setEnabled(False)
             self.status = False
 
     def report(self):
@@ -169,6 +172,9 @@ class App(QMainWindow):
             self.textbox.setTextColor(QColor("red"))
             self.textbox.setText("No files were imported!")
             self.textbox.setTextColor(QColor("black"))
+            self.msa = []
+            self.files = []
+            self.join.setEnabled(False)
             self.status = False
 
     def save_file(self):
