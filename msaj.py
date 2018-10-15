@@ -181,7 +181,7 @@ class App(QMainWindow):
         options = QFileDialog.Options()
         self.filename = QFileDialog.getSaveFileName(self, "Save File", str(Path.home()),
                                                     "NEXUS Files (*.nex *.nexus *.nxs)", options=options)[0]
-        if basename(splitext(self.filename)[1]) == '' and basename(splitext(self.filename)[0]) != '':
+        if basename(splitext(self.filename)[1]) != ('.nex' or '.nexus') and basename(splitext(self.filename)[0]) != '':
             self.filename += '.nex'
         return self.filename
 
