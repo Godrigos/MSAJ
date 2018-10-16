@@ -181,7 +181,9 @@ class App(QMainWindow):
     def save_file(self):
         options = QFileDialog.Options()
         self.filename = QFileDialog.getSaveFileName(self, "Save File", str(Path.home()),
-                                                    "NEXUS Files (*.nex *.nexus *.nxs)", options=options)[0] + '.nex'
+                                                    "NEXUS Files (*.nex *.nexus *.nxs)", options=options)[0]
+        if QFileInfo(self.filename).suffix() != ('.nex' and '.nexus') and basename(splitext(self.filename)[0]) != '':
+            self.filename += '.nex'
         return self.filename
 
     def msaj(self):
