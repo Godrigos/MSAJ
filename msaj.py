@@ -22,6 +22,7 @@ Copyright 2018 Rodrigo Aluizio
 import sys
 from PyQt5.QtWidgets import QFileDialog, QAction, QMainWindow, qApp, QTextEdit, QPushButton
 from PyQt5.QtGui import QIcon, QTextCursor, QColor
+from PyQt5.QtCore import QFileInfo
 from os.path import join, dirname, basename, splitext
 from glob import glob
 from Bio import AlignIO
@@ -180,9 +181,7 @@ class App(QMainWindow):
     def save_file(self):
         options = QFileDialog.Options()
         self.filename = QFileDialog.getSaveFileName(self, "Save File", str(Path.home()),
-                                                    "NEXUS Files (*.nex *.nexus *.nxs)", options=options)[0]
-        if basename(splitext(self.filename)[1]) != ('.nex' and '.nexus') and basename(splitext(self.filename)[0]) != '':
-            self.filename += '.nex'
+                                                    "NEXUS Files (*.nex *.nexus *.nxs)", options=options)[0] + '.nex'
         return self.filename
 
     def msaj(self):
